@@ -1,1 +1,26 @@
 pip install --user pytmx
+
+from pytmx.util_pygame import load_pygame
+
+def blit_my_map(window, tmxdata, world_offset):   
+    for layer in tmxdata:           
+        for tile in layer.tiles():   
+            x_pixel = (tile[0] * 70) + world_offset[0] 
+            y_pixel = (tile[1] * 70) + world_offset[1]
+
+            if -70 <= x_pixel <= window.get_width() and -70 <= y_pixel <= window.get_height():
+                window.blit(tile[2], (x_pixel, y_pixel)) 
+
+            window.blit(tile[2], (x_pixel, y_pixel))
+
+def main():
+    #---------- game variables ----------
+    world_offset = (0,0) 
+    
+    tmx_data = load_pygame("my_map.tmx")  
+
+#---------- game loop ----------
+    while not quit:  
+        window.fill((0,0,0)) 
+
+        blit_my_map(window, tmx_data, world_offset) 
