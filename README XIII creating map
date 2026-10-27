@@ -1,1 +1,40 @@
+1.) nachdem das ptmx Modul über die Konsole installiert wurde, muss die Bibliothek im Code eingebunden werden 
+// from pytmx.util_pygame import load_pygame
+
+2.) es wird eine Funktion benötigt um die gebaute Map aus Tiled Stück für Stück zu rendern, die for-Schleife geht jede Zeile der Map durch und extrahiert Pixel nach Pixel
+
+3.) Variablen für die Positionsangaben und das Image werden benötigt
+// def blit_my_map(window, tmxdata, world_offset):   
+      for layer in tmxdata:           
+          for tile in layer.tiles():    
+
+              x_pixel = (tile[0] * 70) + world_offset[0] 
+              y_pixel = (tile[1] * 70) + world_offset[1]
+
+4.) tile 0 = x grid location
+    tile 1 = y grid location
+    tile 3 = image des tiles
+
+5.) damit nicht die ganze Map gerendert werden muss konzentrieren wir uns auf einen 70 x 70 Pixel Ausschnitt (Sichtbar für den Spieler)
+
+6.) es werden also nur tiles im sichtbaren Bereich gerendert
+// if -70 <= x_pixel <= window.get_width() and -70 <= y_pixel <= window.get_height():
+       window.blit(tile[2], (x_pixel, y_pixel))
+
+7.) das Image muss an der gegebenen Position gerendert werden mit der üblichen blit-Methode
+// window.blit(tile[2], (x_pixel, y_pixel))
+
+8.) Ausschnitt der gesamten Map festlegen, von wo gestartet wird
+// def main():
+      #---------- game variables ----------
+      world_offset = (0,0) 
+
+9.) die Tiled-Map in pygame laden
+// tmx_data = load_pygame("my_map.tmx")  
+
+10.) im "game loop" den Bildschirm aktualisieren (schwarz zeichnen) und die Funktion zum rendern der Map mit entsprechenden Parametern aufrufen
+// while not quit:  
+          window.fill((0,0,0)) 
+
+          blit_my_map(window, tmx_data, world_offset) 
 
