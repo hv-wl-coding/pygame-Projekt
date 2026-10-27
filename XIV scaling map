@@ -1,0 +1,5 @@
+img = pygame.transform.scale(tile[2], (35,35)) #tiles in der größe skalieren
+x_pixel = (tile[0] * 35) + world_offset[0] 
+y_pixel = (tile[1] * 35) + world_offset[1]
+
+window.blit(img, (x_pixel, y_pixel))
