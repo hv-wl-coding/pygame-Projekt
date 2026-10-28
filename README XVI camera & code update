@@ -1,0 +1,49 @@
+1.) Ziel ist eine Kamera welche die spielfigur zentriert und nicht erst am Rand das Offset vor sich her schiebt
+
+2.) zusätzlich benötigen wir "clamping", das die Kamera der GRenze der Map kleben bleibt, aber die Spielfigur bis zu diesem noch fortlaufen kann
+
+3.) aus der Initialisierung am Ende die Fenstereigenschaften in die main()-Funktion verschieben, bekannte window Variablen werden früher benötigt
+// #---------- game variables ----------
+  width, height = 800, 600 
+  window = pygame.display.set_mode((width, height))
+  clock = pygame.time.Clock()
+
+4.) Spieler und Bodenvaraiblen anpassen
+// player_x = 100
+   y_ground = 2240
+   player_y = y_ground
+
+5.) Variablen für die Mapbreite und Höhe definieren, berechnet sich aus den Pixeln Tile-Anzahl * Tile-Größe
+// map_width = tmx.data.width * 35
+  map_heigth = tmx_data.height * 35
+
+6.) die angepassten Variablen übernehmen, z.B. in der Keyboardsteuerung
+// if keyspressed[ord('a')]:
+      player_x -= 5
+      direction = "left"
+
+7.) Bedingung für stehendes Image vereinheitlichen
+// if sum(keyspressed) == 0 and player_y >= y_ground
+      direction = "stand"
+
+8.) Zentrierung für die Spilefigur/-kamera und den dadurch entstehenden "world-offset" zu jeder Koordinate
+// world_offset_x = (width // 2) - player_x
+   world_offset_y = (height // 2) - player_y
+
+9.) Clamping: verhindert das die kamera über die Mapgrenze hinaus wandert
+// world_offset_x = max(-(map_width - width), min(0, world_offset_x))
+  world_offset_y = max(-(map_heigth - height), min(0, world_offset_y))
+
+10.) Map mit angepasstem "world_offset" rendern
+// blit_my_map(window, tmx_date, world_offset
+
+11.) Position der Spielfigur berechnen, damit auch bei feststehender Kamera am Maprand der Spieler noch ganz bis zu diesem laufen kann
+// screen_player_x = player_x + world_offset_x
+   screen_player_y = player_y + world_offset_y
+
+12.) alte Grenzberechnung wird nicht mehr benötigt
+
+13.) bei der Anpassung des Spielerimages an die Bewegungsrichtung die Spielerkoordinaten anpassen
+// if direction == "right": 
+       window.blit(player_right[player_right_frame], (screen_player_x, screen_player_y))  
+       player_right_frame = player_right_frame + 1 
