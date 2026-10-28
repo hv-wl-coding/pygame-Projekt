@@ -1,1 +1,18 @@
+#---------- upper & lower boundaries -----------
+if y < 20:
+    y = 20 
+    world_offset[1] += 10      
 
+if y > y_ground:  
+    y = y_ground 
+    world_offset[1] -= 10
+
+#---------- left & right boundaries -----------
+if x < 20: 
+    x = 20
+    world_offset[0] += 10
+
+if x > window.get_width() -20 - 55: 
+    x = window.get_width() -20 - 55
+    world_offset[0] -= 10
+                                            
