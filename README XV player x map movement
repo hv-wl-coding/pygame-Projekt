@@ -1,0 +1,28 @@
+1.) aktuell sind die Bildschirmgrenzen fest definiert, Spieler kann nur bis dorthin laufen und bleibt statisch in seinem Map-Ausschitt
+
+2.) nun soll der Bildschirmausschnitt mit laufen wenn sich die Spielfigur bewegt um auch in andere Mapausschnitte zu kommen
+
+3.) an der Ober- und Untergrenze wird der "world_offset" ergänzt
+// if y < 20:
+      y = 20
+      world_offset[1] += 10
+
+4.) so verschiebt sich die Grenze durch die Anzahl Pixel des Offsets
+
+5.) für die untere Grenze am Boden (auf der die Spielfigur läuft) orientieren
+// if y > y_ground:
+      y = y_ground
+      world_offset[1] -= 10
+
+6.) sowohl für die x- als auch y-Ebene, 20 Pixel verschieben für einen kleinen Maprand
+
+7.) auf += (obere Grenze) und -= (untere Grenze) achten, da sich die koordinaten von der oberen linekn Ecke (0,0) aus verschieben
+
+8.) dieser Wert wird bei der Bildschirmweite mit berücksichtigt für die rechte Grenze
+// if x > window.get_width() - 20 -55:
+      x = window.get_width() -20 -55
+      world_offset[0] -= 10
+
+9.) aktuell sind die "solid" Strukturen aus der Tiledmap noch nicht im Code verankert, somit sind keine Hindernisse vorhanden und die tatsächliche Maogrenze kann überschritten werden
+
+10.) keine echte "Kamera" die an den Levelbegrenzungen stehen bleibt
