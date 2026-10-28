@@ -1,0 +1,204 @@
+import pygame, time, random
+from pygame.locals import *
+from pytmx.util_pygame import load_pygame 
+
+def blit_my_map(window, tmxdata, world_offset): 
+    for layer in tmxdata:           
+        for tile in layer.tiles():   
+
+            img = pygame.transform.scale(tile[2], (35,35)) 
+            x_pixel = (tile[0] * 35) + world_offset[0] 
+            y_pixel = (tile[1] * 35) + world_offset[1]
+
+            if -70 <= x_pixel <= window.get_width() and -70 <= y_pixel <= window.get_height():
+                window.blit(tile[2], (x_pixel, y_pixel)) 
+
+            window.blit(img, (x_pixel, y_pixel)) 
+
+def main():
+    #---------- game variables ----------
+    width, height = 800, 600    
+    window = pygame.display.set_mode((width, height))
+    clock = pygame.time.Clock()
+    
+    world_offset = [-50,-2838.5] 
+
+    tmx_data = load_pygame("my_map.tmx")  
+
+    map_width = tmx_data.width * 35 
+    map_heigth = tmx_data.height * 35
+    
+    quit = False
+
+    #x = 100
+    player_x = 100
+    y_ground = 3340
+    player_y = y_ground
+    
+    #---------- loading image for standing ----------
+    player_stand = pygame.image.load("Assets for Project 1 game/assets/p3_stand.png").convert_alpha() 
+
+    player_stand = pygame.transform.scale(player_stand, (40, 55)) 
+
+    #---------- loading image for walking ----------
+    player_right = [       
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk01.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk02.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk03.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk04.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk05.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk06.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk07.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk08.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk09.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk10.png").convert_alpha(),
+            pygame.image.load("Assets for Project 1 game/assets/p3_walk/PNG/p3_walk11.png").convert_alpha()
+    ] 
+
+    #---------- list comprehension for scaling  ----------
+    player_right = [ pygame.transform.scale(image, (40, 55)) for image in player_right ] 
+    player_right_frame = 0 
+
+    player_left = [ pygame.transform.flip(image,True, False) for image in player_right ] 
+    player_left_frame = 0 
+
+    player_jump = pygame.image.load("Assets for Project 1 game/assets/p3_jump.png").convert_alpha() 
+    player_jump = pygame.transform.scale(player_jump, (40, 55)) 
+    player_jump_frame = 0 
+
+    player_land = pygame.image.load("Assets for Project 1 game/assets/p3_duck.png").convert_alpha() 
+    player_land = pygame.transform.scale(player_land, (40, 55)) 
+
+    direction = "stand" 
+
+    #---------- game loop ----------
+    while not quit:  
+        window.fill((0,0,0)) 
+
+        blit_my_map(window, tmx_data, world_offset) 
+
+        #----------- events -----------
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                quit = True
+
+        keyspressed = pygame.key.get_pressed() 
+
+        #----------- horizontal movement -----------
+        if keyspressed[ord('a')]:  
+            player_x -= 5            
+            direction = "left" 
+
+        if keyspressed[ord('d')]:         
+            player_x += 5
+            direction = "right" 
+
+        #----------- vertical movement -----------
+        if keyspressed[ord('w')]:  
+            #y = y - 5
+            #direction = "jump"
+            if player_y >= y_ground:   
+                player_jump_frame = 10 
+
+        if keyspressed[ord('s')]:       
+            #y = y + 5
+            #direction = "landing"
+            pass    
+
+        if sum(keyspressed) == 0 and player_y >= y_ground: 
+            direction = "stand" 
+
+        if player_jump_frame > 0:
+            player_y -= 10 
+            direction = "jump"
+            player_jump_frame = player_jump_frame - 1 
+            #oder: player_jump_frame -= player_jump_frame
+
+        elif player_y < y_ground:  
+            direction = "landing" 
+            player_y += 10  
+
+        #----------  boundaries (new) -----------
+        if player_x < 0: 
+            player_x = 0
+
+        if player_x > map_width - 40: 
+            player_x = map_width - 40
+
+        if player_y > y_ground: 
+            player_y = y_ground
+
+        #----------- camera -----------
+        world_offset_x = (width // 2) - player_x
+        world_offset_y = (height // 2) - player_y
+
+        #----------- clamping -----------
+        world_offset_x = max(-(map_width - width), min(0, world_offset_x))
+        world_offset_y = max(-(map_heigth - height), min(0, world_offset_y))
+
+        world_offset = [world_offset_x, world_offset_y]
+
+        # ----------- render ----------
+        blit_my_map(window, tmx_data, world_offset) 
+
+        screen_player_x = player_x + world_offset_x
+        screen_player_y = player_y + world_offset_y
+
+        #---------- upper & lower boundaries -----------
+        #if y < 20:
+        #    y = 20 
+        #    world_offset[1] += 10    
+        
+        #if y >= window.get_height() -20 - 55:  
+        #    y = window.get_height() -20 - 55 
+        #if y > y_ground:  
+        #    y = y_ground 
+        #    world_offset[1] -= 10
+
+        #---------- left & right boundaries -----------
+        #if x < 20: 
+        #    x = 20
+        #    world_offset[0] += 10
+
+        #if x > window.get_width() -20 - 55: 
+        #    x = window.get_width() -20 - 55
+        #    world_offset[0] -= 10
+                                            
+        #---------- game logic ----------
+        #player = Rect(x, y, 50, 50) 
+        #pygame.draw.rect(window, (204, 0, 255), player) 
+
+        if direction == "right": 
+            window.blit(player_right[player_right_frame], (screen_player_x, screen_player_y))
+            player_right_frame = player_right_frame + 1 
+            #kürzere Version als Modulo: player_right_frame = (player_right_frame + 1) % len(player_right) 
+
+            if (player_right_frame >= len(player_right)): 
+                player_right_frame = 0 
+
+        elif direction == "left":
+            window.blit(player_left[player_left_frame], (screen_player_x, screen_player_y))
+            player_left_frame = player_left_frame + 1
+
+            if player_left_frame >= len(player_left):
+                player_left_frame = 0
+
+        elif direction == "jump":         
+            window.blit(player_jump, (screen_player_x, screen_player_y))
+
+        elif direction == "landing":       
+            window.blit(player_land, (screen_player_x, screen_player_y))
+
+        else:                        
+            window.blit(player_stand, (screen_player_x, screen_player_y))
+
+        #---------- update screen ----------
+        pygame.display.update()  
+        clock.tick(60)      
+
+#---------- initialise & run game -----------
+if __name__ == "__main__":
+    pygame.init()
+    pygame.mixer.init()
+    main()
+    pygame.quit()
