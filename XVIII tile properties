@@ -1,1 +1,25 @@
+def get_my_tiles_properties(tmxdata, player_x, player_y): 
+    #world_x = player_x - world_offset[0]         
+    #world_y = player_y - world_offset[1]    
 
+    #tile_x = world_x // 35     
+    #tile_y = world_y // 35
+    tile_x = int(player_x //35)
+    tile_y = int(player_y // 35)
+
+    try: #error handling
+        #layer = tmxdata.layers[0]
+        properties = tmxdata.get_tile_properties(tile_x, tile_y, 0) 
+
+    except ValueError:
+        properties = {"climbable": False, "ground": False, "health": 0, "point": 0, 
+                              "provide": '', "require": '', "solid": False}
+    
+    if properties is None:    #wenn kein tile vorliegt (freier raum)
+        properties = {"climbable": False, "ground": False, "health": 0, "point": 0, 
+                      "provide": '', "require": '', "solid": False} 
+    return properties 
+
+#----------- horizontal movement -----------
+standing_on = get_my_tiles_properties(tmx_data, player_x+25, player_y+70) 
+print(standing_on)
