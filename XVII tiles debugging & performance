@@ -1,0 +1,9 @@
+def blit_my_map(window, tmxdata, world_offset): 
+    for layer in tmxdata:           
+        for tile in layer.tiles():   
+
+            x_pixel = (tile[0] * 35) + world_offset[0] 
+            y_pixel = (tile[1] * 35) + world_offset[1]
+
+            if -70 <= x_pixel <= window.get_width() and -70 <= y_pixel <= window.get_height():
+                window.blit(tile[2], (int(x_pixel), int(y_pixel)))
