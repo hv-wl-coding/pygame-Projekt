@@ -1,0 +1,10 @@
+1.) die Tiles werden teilweise doppelt dargestellt und haben zum nächsten merkwürdige Übergänge
+
+2.) das rendern der Map in der "bli_my_map" Funktion glattziehen: Parameter als Integer casten
+// window.blit(tile[2], (int(x_pixel), int(y_pixel)))
+
+3.) die Performance des Spiels verbessern: zuletzt wurde die Map zweimal gerendert -> Überlagerung der Tiles und im Gameloop jedes Tile extra skaliert
+
+4.) 2 Codezeilen aus der Funktion entfernen
+// img = pygame.transform.scale(tile[2], (35,35)) 
+  window.blit(img, (x_pixel, y_pixel)) 
