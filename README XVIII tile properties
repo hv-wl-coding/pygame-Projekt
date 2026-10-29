@@ -9,22 +9,30 @@
 // tile_x = int(player_x //35)
    tile_y = int(player_y // 35)
 
-5.) Errorhandling, sofern keine Daten ermittelt werden können z.B. außerhalb der Map
+5.) Standart Eigenschaft
+// default_props = {"climbable": False, "ground": False, "health": 0, "point": 0, 
+                  "provide": '', "require": '', "solid": False}
+
+6.) je nach Zeichnung der Map am besten alle Ebenen nach tiles prüfen
+// for layer_idx in range(len(tmxdata.layers)):
+
+7.) Errorhandling, sofern keine Daten ermittelt werden können z.B. außerhalb der Map
 // try: 
-   except ValueError:
+   except (ValueError, KeyError):
+      continue
 
-6.) die abgefragten Eigenschaften (des tiles an den jewieligen Koordianten) werden in der "properties" Variable gespeichert, wird als dictionary {} mit allen vorhandenen Eigenschaften und dazugehörigen Werten hinterlegt
+8.) die abgefragten Eigenschaften (des tiles an den jewieligen Koordianten) werden in der "properties" Variable gespeichert, wird als dictionary {} mit allen vorhandenen Eigenschaften und dazugehörigen Werten hinterlegt
+// properties = tmxdata.get_tile_properties(tile_x, tile_y, layer_idx) 
 
-7.) sofern kein tile berührt wird (z.B. beim Fallen) wird eine entsprechende Bedingung hinzugefügt:
-// if properties Is None:
+9.) wenn tile berührt wird (z.B. beim Fallen) wird eine entsprechende Bedingung hinzugefügt:
+// if properties is not None:
 
-8.) alle Eigenschaften in der Liste sind also leer, None, False, 0, etc.
-// properties = {"climbable": False, "ground": False, "health": 0, "point": 0, 
-                "provide": '', "require": '', "solid": False}
-
-9.) Rückgabewert festlegen
+10.) Rückgabewert festlegen
 // return properties
 
-10.) vorübergehend die Eigenschaften bei veränderter Spierlposition abfragen (Funktionsaufruf zum spezifischen tile
-// standing_on = get_my_tiles_properties(tmx_data, player_x+25, player_y+70) 
-   print(standing_on)s
+11.) vorübergehend die Eigenschaften bei veränderter Spierlposition abfragen (Funktionsaufruf zum spezifischen tile
+// standing_on = get_my_tiles_properties(tmx_data, player_x+20, player_y+55)
+    print(standing_on)
+
+12.) Standart Eigenschaften als Rückgabewert
+// return default_props
